@@ -1,8 +1,8 @@
 {
-  "name": "compute-demo",
+  "name": "gpu-compute-web-dl",
   "author": "Manuel Machado",
   "version": "1.0.0",
-  "private": true,
+  "private": false,
   "homepage": "./",
   "dependencies": {
     "@types/node": "^14.14.13",
