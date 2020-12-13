@@ -3,7 +3,6 @@ import matrixMultiplyShader from './matrixMultiply.comp'
 import { Shader } from '../../shader'
 import { createTextureFromScratch, Texture } from '../../../utils/gl/textures'
 
-
 export class VideoFilterComputeShader {
   private readonly context: WebGL2ComputeRenderingContext
   private framebuffer: WebGLFramebuffer | null = null
@@ -62,15 +61,7 @@ export class VideoFilterComputeShader {
         this.context.READ_ONLY,
         this.context.RGBA8,
       )
-      this.context.bindImageTexture(
-        1,
-        this.frameBufferTexture.textureID,
-        0,
-        false,
-        0,
-        this.context.WRITE_ONLY,
-        this.context.RGBA8,
-      )
+      this.context.bindTexture(this.context.TEXTURE_2D, this.videoTexture.textureID)
       this.context.texSubImage2D(
         this.context.TEXTURE_2D,
         0,
@@ -81,10 +72,18 @@ export class VideoFilterComputeShader {
         this.video,
       )
       this.context.bindFramebuffer(this.context.READ_FRAMEBUFFER, this.framebuffer)
-      if (this.enabled) {
-        this.context.dispatchCompute(this.videoTexture.width / 16, this.videoTexture.height / 16, 1)
-        this.context.memoryBarrier(this.context.SHADER_IMAGE_ACCESS_BARRIER_BIT)
-      }
+      this.context.bindImageTexture(
+        1,
+        this.frameBufferTexture.textureID,
+        0,
+        false,
+        0,
+        this.context.WRITE_ONLY,
+        this.context.RGBA8,
+      )
+      this.program.setBool('enabled', this.enabled)
+      this.context.dispatchCompute(this.videoTexture.width / 16, this.videoTexture.height / 16, 1)
+      this.context.memoryBarrier(this.context.SHADER_IMAGE_ACCESS_BARRIER_BIT)
       // show computed texture to Canvas
       this.context.blitFramebuffer(
         0,

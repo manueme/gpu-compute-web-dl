@@ -64,27 +64,7 @@ export function createShaderProgramFromSources(
   return createShaderProgram(gl, shaders)
 }
 
-export type Mat4 = [
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-]
-export type Vec4 = [number, number, number, number]
 export type Vec3 = [number, number, number]
-export type Vec2 = [number, number]
 
 export class Shader {
   protected program: WebGLProgram | null
@@ -106,16 +86,9 @@ export class Shader {
     }
   }
 
-  public setFloat(name: string, value: number) {
+  public setBool(name: string, value: boolean) {
     if (this.program) {
-      this.context?.uniform1f(this.context.getUniformLocation(this.program, name), value)
-      checkGlError(this.context, 'setting uniform ' + name)
-    }
-  }
-
-  public setVec2(name: string, value: Vec2 | Float32Array) {
-    if (this.program) {
-      this.context?.uniform2fv(this.context.getUniformLocation(this.program, name), value)
+      this.context?.uniform1i(this.context.getUniformLocation(this.program, name), value ? 1 : 0)
       checkGlError(this.context, 'setting uniform ' + name)
     }
   }
@@ -125,37 +98,5 @@ export class Shader {
       this.context?.uniform3uiv(this.context.getUniformLocation(this.program, name), value)
       checkGlError(this.context, 'setting uniform ' + name)
     }
-  }
-
-  public setVec4(name: string, value: Vec4 | Float32Array) {
-    if (this.program) {
-      this.context?.uniform4fv(this.context.getUniformLocation(this.program, name), value)
-      checkGlError(this.context, 'setting uniform ' + name)
-    }
-  }
-
-  public setMat4(name: string, value: Mat4 | Float32Array) {
-    if (this.program) {
-      this.context?.uniformMatrix4fv(
-        this.context.getUniformLocation(this.program, name),
-        false,
-        value,
-      )
-      checkGlError(this.context, 'setting uniform ' + name)
-    }
-  }
-
-  public getUniformLocation(name: string) {
-    if (this.context && this.program) {
-      return this.context.getUniformLocation(this.program, name)
-    }
-    return null
-  }
-
-  public destroy() {
-    const program = this.program
-    this.program = null
-    this.context?.deleteProgram(program)
-    this.context = null
   }
 }
