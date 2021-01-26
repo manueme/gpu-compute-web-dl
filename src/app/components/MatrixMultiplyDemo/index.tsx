@@ -26,7 +26,7 @@ const MatrixMultiplyDemo: React.FC<MatrixDemoProps> = ({ matrixMultiplyComputeSh
     setSize(Number(evt.currentTarget.value))
   }
 
-  function computeCPU() {
+  function computeCPU(event: React.MouseEvent) {
     const now = performance.now()
     matrixMultiplyComputeShader.multiplyCPU()
     const time = Math.round(performance.now() - now)
@@ -40,11 +40,7 @@ const MatrixMultiplyDemo: React.FC<MatrixDemoProps> = ({ matrixMultiplyComputeSh
     setGPUTime(`${time}`)
   }
 
-  const maxNumElementsIndex = 12
-  const values: number[] = []
-  for (let i = 5; i < maxNumElementsIndex; i++) {
-    values.push(Math.pow(2, i))
-  }
+  const values: number[] = [20, 40, 80, 100, 250, 500, 1000, 1500, 2000]
   const maxList = 10000
   const GPUValues = () => {
     let values = 'Matrix as a list:\n\n'

@@ -27,12 +27,20 @@ export class VideoFilterComputeShader {
   }
 
   public setVideo(video: HTMLVideoElement) {
+    if (this.videoTexture) {
+      this.context.deleteTexture(this.videoTexture.textureID)
+    }
+    if (this.frameBufferTexture) {
+      this.context.deleteTexture(this.frameBufferTexture.textureID)
+    }
+    if (this.framebuffer) {
+      this.context.deleteFramebuffer(this.framebuffer)
+    }
     this.videoTexture = createTextureFromScratch(this.context, video.videoWidth, video.videoHeight)
     this.context.bindTexture(this.context.TEXTURE_2D, this.videoTexture.textureID)
     this.context.pixelStorei(this.context.UNPACK_FLIP_Y_WEBGL, true) // the video is flipped vertically
     this.context.canvas.width = this.videoTexture.width
     this.context.canvas.height = this.videoTexture.height
-    this.video = video
     this.framebuffer = this.context.createFramebuffer()
     this.context.bindFramebuffer(this.context.READ_FRAMEBUFFER, this.framebuffer)
     this.frameBufferTexture = createTextureFromScratch(
@@ -47,6 +55,7 @@ export class VideoFilterComputeShader {
       this.frameBufferTexture.textureID,
       0,
     )
+    this.video = video
   }
 
   public filter() {

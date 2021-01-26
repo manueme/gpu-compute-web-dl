@@ -13,13 +13,13 @@ const WebCamFilterDemo: React.FC<WebCamFilterDemoProps> = ({
   videoFilterComputeShader,
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null)
-  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const contextRef = useRef<CanvasRenderingContext2D | null>(null)
   const [enableFilter, setEnableFilter] = useState(false)
   const requestRef = useRef<number>()
   const previousTimeRef = useRef<number>()
 
-  function updateVideo(enable: boolean) {
-    const render2d = canvasRef.current?.getContext('2d')
+  function updateVideo() {
+    const render2d = contextRef.current
     if (!render2d) {
       return
     }
@@ -30,7 +30,7 @@ const WebCamFilterDemo: React.FC<WebCamFilterDemoProps> = ({
 
   function render(time: number) {
     if (previousTimeRef.current != undefined) {
-      updateVideo(enableFilter)
+      updateVideo()
     }
     previousTimeRef.current = time
     requestRef.current = requestAnimationFrame(render)
@@ -43,10 +43,10 @@ const WebCamFilterDemo: React.FC<WebCamFilterDemoProps> = ({
 
   function requestWebCam() {
     if (videoRef.current) {
-      accessWebcam(videoRef.current).then(() => {
+      accessWebcam(videoRef.current!).then(() => {
         videoFilterComputeShader.setVideo(videoRef.current!)
-        canvasRef.current!.width = videoRef.current!.videoWidth
-        canvasRef.current!.height = videoRef.current!.videoHeight
+        contextRef.current!.canvas.width = videoRef.current!.videoWidth
+        contextRef.current!.canvas.height = videoRef.current!.videoHeight
       })
     }
   }
@@ -65,9 +65,8 @@ const WebCamFilterDemo: React.FC<WebCamFilterDemoProps> = ({
         <input type={'checkbox'} checked={enableFilter} readOnly={true} />
         <label>Enable Filter</label>
       </div>
-
-      <video ref={videoRef}></video>
-      <canvas ref={canvasRef}></canvas>
+      <video ref={videoRef} />
+      <canvas ref={(canvasRef) => (contextRef.current = canvasRef?.getContext('2d') || null)} />
     </div>
   )
 }
