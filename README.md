@@ -15,6 +15,11 @@ As a complement to a presentation on the applicability of the GPU in web applica
 
 _(December 2020 note) -_ The WebGL Compute feature works only (and it will most likely remain working only) on Windows and Linux.
 
+_(February 2021 note) -_ The WebGLCompute feature was declared useless, because it is obviously superseded by the future WebGPU API. 
+So it is basically out of scope for WebGL and it was removed from chromium, see: https://bugs.chromium.org/p/chromium/issues/detail?id=1131991
+
+If you really want to run this demo you can download [this](https://chromium.en.uptodown.com/windows/download/2821142) version of chromium.
+
 To enable this feature on Chromium browsers enable the following command line flag:
 
 `--enable-webgl2-compute-context` 
